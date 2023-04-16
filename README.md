@@ -3,6 +3,13 @@
 
 ## Usage 
 
+### Maven
+
+
+```
+mvn clean install
+```
+
 ### Docker
 
 ```
