@@ -16,5 +16,10 @@ ENV JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
 
+# Create a user to run the application and set appropriate permissions
+RUN addgroup --system myuser && adduser --system myuser --ingroup myuser
+RUN chown -R myuser:myuser /app
+USER myuser
+
 # Run the executable jar when the container starts
 CMD ["java", "-jar", "app.jar"]

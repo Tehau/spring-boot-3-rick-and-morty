@@ -1,17 +1,14 @@
 package com.tehau.spring.api.service;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.tehau.spring.api.model.CharacterRM;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,7 +36,7 @@ public class CharacterService {
 
     public CharacterRM save(CharacterRM CharacterRM) {
         if (CharacterRM.getId() == 0) {
-            int maxId = 0;
+            long maxId = 0;
             for (CharacterRM c : CharacterRMs) {
                 if (c.getId() > maxId) {
                     maxId = c.getId();

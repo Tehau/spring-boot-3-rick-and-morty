@@ -1,27 +1,72 @@
 package com.tehau.spring.api.model;
 
-import java.util.List;
+import jakarta.persistence.*;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+@Entity
+@Table(name = "characters")
 public class CharacterRM {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private long id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "status")
     private String status;
+
+    @Column(name = "species")
     private String species;
+
+    @Column(name = "type")
     private String type;
+
+    @Column(name = "gender")
     private String gender;
+
+    @ManyToOne
+    @JoinColumn(name = "origin_id")
     private Origin origin;
+
+    @ManyToOne
+    @JoinColumn(name = "location_id")
     private Location location;
+
+
+    @Column(name = "image")
     private String image;
-    private List<String> episode;
+
+    @Column(name = "url")
     private String url;
+
+    @Column(name = "created")
     private String created;
 
-    public int getId() {
+    @ManyToMany
+    @JoinTable(name = "character_episode",
+            joinColumns = @JoinColumn(name = "character_id"))
+    private Set<Episode> episodes = new LinkedHashSet<>();
+
+    public CharacterRM() {
+    }
+
+    public Set<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(Set<Episode> episodes) {
+        this.episodes = episodes;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -87,14 +132,6 @@ public class CharacterRM {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public List<String> getEpisode() {
-        return episode;
-    }
-
-    public void setEpisode(List<String> episode) {
-        this.episode = episode;
     }
 
     public String getUrl() {
