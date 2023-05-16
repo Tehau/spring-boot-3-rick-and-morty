@@ -1,31 +1,35 @@
 package com.tehau.spring.api.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "characters")
 public class CharacterRM {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private long id;
 
-    @Column(name = "name")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
 
-    @Column(name = "status")
     private String status;
 
-    @Column(name = "species")
     private String species;
 
-    @Column(name = "type")
     private String type;
 
-    @Column(name = "gender")
     private String gender;
 
     @ManyToOne
@@ -37,19 +41,17 @@ public class CharacterRM {
     private Location location;
 
 
-    @Column(name = "image")
     private String image;
 
-    @Column(name = "url")
     private String url;
 
-    @Column(name = "created")
     private String created;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "character_episode",
-            joinColumns = @JoinColumn(name = "character_id"))
-    private Set<Episode> episodes = new LinkedHashSet<>();
+            joinColumns = @JoinColumn(name = "character_id"),
+            inverseJoinColumns = @JoinColumn(name = "episodes_id"))
+    private Set<Episode> episodes = new HashSet<>();
 
     public CharacterRM() {
     }
@@ -62,11 +64,11 @@ public class CharacterRM {
         this.episodes = episodes;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

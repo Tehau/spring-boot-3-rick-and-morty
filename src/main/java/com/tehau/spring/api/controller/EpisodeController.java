@@ -3,7 +3,7 @@ package com.tehau.spring.api.controller;
 import com.tehau.spring.api.exception.ResourceNotFoundException;
 import com.tehau.spring.api.model.CharacterRM;
 import com.tehau.spring.api.model.Episode;
-import com.tehau.spring.api.service.CharacterService;
+import com.tehau.spring.api.service.EpisodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,80 +24,81 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "Character", description = "Character management APIs")
+@Tag(name = "Episode", description = "Episode management APIs")
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
-@RequestMapping("/api/characters")
-public class CharacterController {
+@RequestMapping("/api/episodes")
+public class EpisodeController {
 
-    private final CharacterService characterService;
+    private final EpisodeService episodeService;
 
-    public CharacterController(CharacterService characterService) {
-        this.characterService = characterService;
+    public EpisodeController(EpisodeService episodeService) {
+        this.episodeService = episodeService;
     }
 
-    @Operation(summary = "Retrieve all Characters Rick and Morty.", tags = {"get", "filter"})
+    @Operation(summary = "Retrieve all Episodes Rick and Morty.", tags = {"get", "filter"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = CharacterRM.class), mediaType = "application/json")}),
-            @ApiResponse(responseCode = "204", description = "There are no Character", content = {
+                    @Content(schema = @Schema(implementation = Episode.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", description = "There are no Episodes", content = {
                     @Content(schema = @Schema())}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @GetMapping
-    public ResponseEntity<List<CharacterRM>> getAllCharacters() {
-        List<CharacterRM> characterRMS = characterService.findAll();
-        if (characterRMS.isEmpty()) {
+    public ResponseEntity<List<Episode>> getAllEpisodes() {
+        List<Episode> episodes = episodeService.findAll();
+        if (episodes.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(characterRMS, HttpStatus.OK);
+        return new ResponseEntity<>(episodes, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Create a new Episode", tags = {"post"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = Episode.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())})})
+    @PostMapping
+    public ResponseEntity<Episode> createEpisode(@RequestBody Episode episode) {
+        episode = episodeService.save(episode);
+        return new ResponseEntity<>(episode, HttpStatus.CREATED);
     }
 
     @Operation(
-            summary = "Retrieve a Character by Id",
-            description = "Get a Character object by specifying its id. The response is Character object.",
+            summary = "Retrieve a Episode by Id",
+            description = "Get a Episode object by specifying its id. The response is Episode object.",
             tags = {"get"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = CharacterRM.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @GetMapping("/{id}")
-    public ResponseEntity<CharacterRM> getCharacterById(@PathVariable Long id) {
-        CharacterRM characterRM = characterService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found Character with id = " + id));
+    public ResponseEntity<Episode> getEpisodeById(@PathVariable("id") long id) {
+        Episode tutorial = episodeService.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Tutorial with id = " + id));
 
-        return new ResponseEntity<>(characterRM, HttpStatus.OK);
+        return new ResponseEntity<>(tutorial, HttpStatus.OK);
     }
 
-    @Operation(summary = "Create a new Character", tags = {"post"})
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = CharacterRM.class), mediaType = "application/json")}),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())}),
-            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())})})
-    @PostMapping
-    public ResponseEntity<CharacterRM> createCharacter(@RequestBody CharacterRM character) {
-        character = characterService.save(character);
-        return new ResponseEntity<>(character, HttpStatus.CREATED);
-    }
-
-    @Operation(summary = "Update a Character by ID", tags = {"put"})
+    @Operation(summary = "Update a Episode by ID", tags = {"put"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
                     @Content(schema = @Schema(implementation = Episode.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())})})
-    @PutMapping("/{id}")
-    public ResponseEntity<CharacterRM> updateEpisode(@PathVariable("id") long id, @RequestBody CharacterRM character) {
-        character = characterService.update(id, character);
-        return new ResponseEntity<>(character, HttpStatus.CREATED);
+    @PutMapping("{id}")
+    public ResponseEntity<Episode> updateEpisode(@PathVariable("id") long id, @RequestBody Episode episode) {
+        episode = episodeService.update(id, episode);
+        return new ResponseEntity<>(episode, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Delete Character by ID", tags = {"delete"})
+
+    @Operation(summary = "Delete Episode by ID", tags = {"delete"})
     @ApiResponses({@ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus>  deleteCharacter(@PathVariable Long id) {
-        characterService.deleteById(id);
+    @DeleteMapping("{id}")
+    public ResponseEntity<HttpStatus>  deleteEpisode(@PathVariable Long id) {
+        episodeService.deleteById(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

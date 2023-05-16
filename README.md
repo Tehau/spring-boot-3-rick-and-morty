@@ -1,19 +1,22 @@
 # Spring Boot Basic (with OpenAPI 3 and Swagger)
+Basic Spring boot with Rick and Morty data.
 
+## Requirements
 
-## Usage 
+Java version 17
+
+## Usage
 
 ### Maven
 
-
 ```
-mvn clean install
+mvn clean install -DskipTests
 ```
 
 ### Docker
 
 ```
-docker build --build-arg JAR_FILE=target/spring-boot-3-basic-0.0.1-SNAPSHOT.jar -t spring-rm .
+docker build --build-arg JAR_FILE=target/spring-boot-3-basic-1.0.0-SNAPSHOT.jar -t spring-rm .
 ```
 
 ```
@@ -38,6 +41,10 @@ docker inspect **CONTAINER_ID_POSTGRES**
 ```
 
 Get IPAddress in `NetworkSettings.NetWorks.IPAddress` and this is the connection;host/name
+
+#### Tutorial:
+
+https://www.postgresqltutorial.com/postgresql-getting-started/connect-to-postgresql-database/
 
 ### Docker compose
 

@@ -4,64 +4,61 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.tehau.spring.api.model.CharacterRM;
+import com.tehau.spring.api.model.Episode;
+import com.tehau.spring.api.repository.CharacterRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CharacterService {
     private final File FILE_NAME = new File("src/main/resources/data/rickandmortycharacter.json");
 
-    private List<CharacterRM> CharacterRMs;
+    private List<CharacterRM> characterRMS;
 
-    public CharacterService() {
-        CharacterRMs = loadData();
+    private final CharacterRepository characterRepository;
+
+    public CharacterService(CharacterRepository characterRepository) {
+        characterRMS = loadData();
+        this.characterRepository = characterRepository;
     }
 
     public List<CharacterRM> findAll() {
-        return CharacterRMs;
+        return characterRepository.findAll();
     }
 
-    public CharacterRM findById(int id) {
-        for (CharacterRM CharacterRM : CharacterRMs) {
-            if (CharacterRM.getId() == id) {
-                return CharacterRM;
-            }
-        }
-        return null;
+    public Optional<CharacterRM> findById(Long id) {
+        return characterRepository.findById(id);
     }
 
-    public CharacterRM save(CharacterRM CharacterRM) {
-        if (CharacterRM.getId() == 0) {
-            long maxId = 0;
-            for (CharacterRM c : CharacterRMs) {
-                if (c.getId() > maxId) {
-                    maxId = c.getId();
-                }
-            }
-            CharacterRM.setId(maxId + 1);
-            CharacterRMs.add(CharacterRM);
-        } else {
-            int index = CharacterRMs.indexOf(CharacterRM);
-            CharacterRMs.set(index, CharacterRM);
-        }
-        return CharacterRM;
+    public CharacterRM save(CharacterRM characterRM) {
+        return characterRepository.save(characterRM);
     }
 
-    public void deleteById(int id) {
-        CharacterRM CharacterRMToDelete = null;
-        for (CharacterRM CharacterRM : CharacterRMs) {
-            if (CharacterRM.getId() == id) {
-                CharacterRMToDelete = CharacterRM;
-                break;
-            }
-        }
-        if (CharacterRMToDelete != null) {
-            CharacterRMs.remove(CharacterRMToDelete);
-        }
+    public CharacterRM update(long id , CharacterRM newCharacterRM) {
+        return findById(id)
+                .map(character_db -> {
+                    character_db.setName(newCharacterRM.getName());
+                    character_db.setStatus(newCharacterRM.getStatus());
+                    character_db.setSpecies(newCharacterRM.getSpecies());
+                    character_db.setType(newCharacterRM.getType());
+                    character_db.setGender(newCharacterRM.getGender());
+                    character_db.setOrigin(newCharacterRM.getOrigin());
+                    character_db.setLocation(newCharacterRM.getLocation());
+                    character_db.setImage(newCharacterRM.getImage());
+                    character_db.setUrl(newCharacterRM.getUrl());
+                    return characterRepository.save(character_db);
+                }).orElseGet(() -> {
+                    return characterRepository.save(newCharacterRM);
+                });
+    }
+
+    public void deleteById(Long id) {
+        characterRepository.deleteById(id);
     }
 
     private List<CharacterRM> loadData() {

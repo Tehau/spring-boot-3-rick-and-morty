@@ -1,38 +1,35 @@
 package com.tehau.spring.api.model;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "origins")
 public class Origin {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "url")
     private String url;
 
-    public Origin() {}
-
-    public void setId(Long id) {
-        this.id = id;
+    public Origin() {
     }
 
-    @Id
+    // getters and setters
     public Long getId() {
         return id;
     }
 
-    public Origin(String name, String url) {
-        this.name = name;
-        this.url = url;
+    public void setId(Long id) {
+        this.id = id;
     }
-
-    // getters and setters
 
     public String getName() {
         return name;
